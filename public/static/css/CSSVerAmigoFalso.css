@@ -150,3 +150,22 @@ body {
     background-color: #ddd;
     margin-left: 10px;
 }
+
+.logout-button {
+    position: fixed; /* Lo mantiene fijo en la pantalla aunque hagas scroll */
+    top: 30px;
+    left: 50px;
+    background-color: #E53935; 
+    color: white;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+.logout-button:hover {
+    background-color: #D32F2F; 
+}

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addFriendBtn = document.getElementById('add-friend-btn');
     const cancelBtn = document.getElementById('modal-cancel-btn');
     const modalActionBtn = document.getElementById('modal-action-btn');
+    const logoutBtn = document.getElementById('logout-btn');
     
     const API_URL = 'http://localhost:3000/api';
     let usuarioId = null;
@@ -28,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function deleteCookie(name) {
+        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
 
     // Cargar nombre de usuario
@@ -103,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'flex';
     }
 
+    
     function hideModal() {
         modal.style.display = 'none';
     }
@@ -186,4 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelBtn.addEventListener('click', hideModal);
     form.addEventListener('submit', handleFormSubmit);
     friendsListContainer.addEventListener('click', handleListClick);
+
+    logoutBtn.addEventListener('click', () => {
+        deleteCookie('usuarioId');
+        alert('Has cerrado sesión correctamente.');
+        window.location.href = 'login.html';
+    });
 });
