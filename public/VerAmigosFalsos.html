@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Amigos Falsos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="static/css/CSSVerAmigoFalso.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <h2 class="main-title">Lista de amigos falsos de: <span id="username-display">Cargando...</span></h2>
+
+        <!-- Contenedor deslizable para las tarjetas -->
+        <div class="friends-list-container" id="friends-list">
+            
+        </div>
+    </div>
+
+    <!-- Botón para agregar nuevo amigo -->
+    <button class="add-btn" id="add-friend-btn">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- El Modal para Agregar/Editar -->
+    <div id="friend-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-title">Agregar Nuevo Amigo Falso</h3>
+            <form id="friend-form">
+                <!-- Campo oculto para guardar el ID al editar -->
+                <input type="hidden" id="friend-id">
+
+                <div class="form-group">
+                    <input type="text" id="nombre" placeholder="Nombre Completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha">Fecha del acto:</label>
+                    <input type="date" id="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="nivel">Nivel de la traicion:</label>
+                    <input type="number" id="nivel" min="1" max="10" value="1" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="descripcion" placeholder="Descripcion" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="modal-action-btn">Agregar</button>
+                    <button type="button" id="modal-cancel-btn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="static/js/VerAmigosFalsos.js"></script>
+</body>
+</html>

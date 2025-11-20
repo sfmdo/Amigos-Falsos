@@ -32,7 +32,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             setCookie('usuarioId', result.id, 7);
             
             alert(result.mensaje);
-            window.location.href = 'VerListaAmigosFalsos.html';
+            window.location.href = 'VerAmigosFalsos.html';
         } else {
             throw new Error(result.error || 'Ocurrió un error al iniciar sesión.');
         }
