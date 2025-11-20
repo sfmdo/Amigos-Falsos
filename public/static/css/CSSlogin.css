@@ -1,0 +1,82 @@
+/* Estilo general y tipografía */
+body {
+    background-color: #fff;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 450px; 
+    text-align: center;
+}
+
+
+.main-title {
+    font-size: 2.5rem; 
+    margin-bottom: 0;
+}
+
+.main-subtitle {
+    font-size: 1.8rem; 
+    margin-bottom: 20px;
+}
+
+.form-box {
+    border: 1px solid #000;
+    padding: 40px 50px; 
+    width: 100%;
+}
+
+.form-control {
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 0;
+    padding-bottom: 8px; 
+    font-size: 1.1rem;
+    background-color: transparent; 
+}
+
+.form-control::placeholder { 
+    color: #aaa;
+    opacity: 1; 
+}
+
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #000;
+    background-color: transparent;
+}
+
+.form-check-label {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.form-check-input {
+    border-color: #555;
+}
+.form-check-input:checked {
+    background-color: #555;
+    border-color: #555;
+}
+
+
+.btn-submit {
+    background-color: #90ee90; 
+    border: 1px solid #000;
+    color: #000;
+    font-weight: bold;
+    padding: 8px;
+}
+
+.btn-submit:hover {
+    background-color: #7fdd7f;
+    border-color: #000;
+    color: #000;
+}
