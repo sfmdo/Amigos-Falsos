@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addFriendBtn.addEventListener('click', () => showFriendModal('add'));
         logoutBtn.addEventListener('click', () => {
             deleteCookie('usuarioId');
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         });
 
         // Formularios

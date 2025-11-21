@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         usuarioId = getCookie('usuarioId');
         if (!usuarioId) {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
             return;
         }
 
