@@ -83,10 +83,21 @@ app.get("/api/amigosfalsos/usuario/:usuarioId", (req, res) => {
 
 app.post("/api/amigosfalsos", (req, res) => {
     const { nombre, fecha, n_traicion, descripcion, usuario_id } = req.body;
-    const sql = "INSERT INTO AmigoFalso (Nombre, Fecha, N_Traicion, Descripcion, usuario_id) VALUES (?, ?, ?, ?, ?)";
-    connection.query(sql, [nombre, fecha, n_traicion, descripcion, usuario_id], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ mensaje: "Registro agregado", id: result.insertId });
+    connection.query("SELECT nombre_usuario FROM usuarios WHERE id = ?", [usuario_id], (err, users) => {
+        if (err || users.length === 0) {
+            return res.status(500).json({ error: "No se pudo encontrar el autor del registro." });
+        }
+        const autorNombre = users[0].nombre_usuario;
+
+        const sql = "INSERT INTO AmigoFalso (Nombre, Fecha, N_Traicion, Descripcion, usuario_id, AutorNombre) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        connection.query(sql, [nombre, fecha, n_traicion, descripcion, usuario_id, autorNombre], (err, result) => {
+            if (err) {
+                console.error("Error al insertar la traición:", err);
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(201).json({ mensaje: "Registro agregado", id: result.insertId });
+        });
     });
 });
 
@@ -115,6 +126,16 @@ app.put("/api/amigosfalsos/:id", (req, res) => {
         } 
         
         res.json({ mensaje: `Registro con ID ${id} actualizado correctamente` });
+    });
+});
+
+app.patch("/api/amigosfalsos/publicar/:id", (req, res) => {
+    const { id } = req.params;
+    const { es_publico, es_anonimo } = req.body;
+    const sql = "UPDATE AmigoFalso SET EsPublico = ?, EsAnonimo = ? WHERE ID = ?";
+    connection.query(sql, [es_publico, es_anonimo, id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ mensaje: "Estado de publicación actualizado" });
     });
 });
 

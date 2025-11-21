@@ -1,124 +1,157 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const usernameDisplay = document.getElementById('username-display');
+    // --- ELEMENTOS DEL DOM ---
+    const sidebarUsername = document.getElementById('sidebar-username');
     const friendsListContainer = document.getElementById('friends-list');
-    const modal = document.getElementById('friend-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const form = document.getElementById('friend-form');
     const addFriendBtn = document.getElementById('add-friend-btn');
-    const cancelBtn = document.getElementById('modal-cancel-btn');
-    const modalActionBtn = document.getElementById('modal-action-btn');
     const logoutBtn = document.getElementById('logout-btn');
+
+    // Modales
+    const friendModal = document.getElementById('friend-modal');
+    const publishModal = document.getElementById('publish-modal');
+    const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+
+    // Formularios y botones
+    const friendForm = document.getElementById('friend-form');
+    const publishForm = document.getElementById('publish-form');
+    const modalActionBtn = document.getElementById('modal-action-btn');
     
+    // --- DATOS GLOBALES ---
     const API_URL = 'http://localhost:3000/api';
     let usuarioId = null;
+    let username = 'Usuario';
+    let pendingPublishId = null; // ID de la traición pendiente de publicar
+    let pendingDeleteId = null; // ID de la traición pendiente de eliminar
 
     const colorPalette = [
-        '#FFFACD', // Nivel 1: Amarillo Pálido
-        '#FFF176', // Nivel 2: Amarillo Vainilla
-        '#FFEB3B', // Nivel 3: Amarillo Intenso
-        '#FFD54F', // Nivel 4: Ámbar Claro
-        '#FFB74D', // Nivel 5: Naranja Claro
-        '#FF9800', // Nivel 6: Naranja
-        '#FB8C00', // Nivel 7: Naranja Profundo
-        '#F4511E', // Nivel 8: Naranja Rojizo
-        '#E64A19', // Nivel 9: Rojo Tomate
-        '#E53935'  // Nivel 10: Rojo Normal
+        '#B4B4B4', // Nivel 1
+        '#A7A7A7', // Nivel 2
+        '#9A9A9A', // Nivel 3
+        '#8D8D8D', // Nivel 4
+        '#808080', // Nivel 5
+        '#737373', // Nivel 6
+        '#666666', // Nivel 7
+        '#595959', // Nivel 8
+        '#4C4C4C', // Nivel 9
+        '#3B3B3B'  // Nivel 10
     ];
 
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
+    // Cookies
+    const getCookie = (name) => document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`)?.pop() || null;
+    const deleteCookie = (name) => document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 
-    function deleteCookie(name) {
-        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    }
+    // Funciones principales
 
-    // Cargar nombre de usuario
-    async function fetchUsername() {
+    async function fetchUserData() {
         try {
             const response = await fetch(`${API_URL}/usuario/${usuarioId}`);
             if (!response.ok) throw new Error('Usuario no encontrado');
             const user = await response.json();
-            usernameDisplay.textContent = user.nombre_usuario;
+            username = user.nombre_usuario;
+            sidebarUsername.textContent = username;
         } catch (error) {
             console.error('Error fetching username:', error);
-            usernameDisplay.textContent = 'Desconocido';
+            sidebarUsername.textContent = 'Error';
         }
     }
 
-    // Cargar y mostrar lista de amigos falsos
     async function fetchFriends() {
         try {
             const response = await fetch(`${API_URL}/amigosfalsos/usuario/${usuarioId}`);
             const friends = await response.json();
-            
-            friendsListContainer.innerHTML = ''; // Limpiar lista actual
+            friendsListContainer.innerHTML = '';
             
             if (friends.length === 0) {
-                friendsListContainer.innerHTML = '<p>No tienes amigos falsos en tu lista. ¡Agrega uno!</p>';
-            } else {
-                friends.forEach(friend => {
-                    const card = document.createElement('div');
-                    card.className = 'friend-card';
-                    const nivel = friend.N_Traicion;
-                    if (nivel >= 1 && nivel <= 10) {
-                        card.style.backgroundColor = colorPalette[nivel - 1];
-                    }
-                    card.innerHTML = `
-                        <div class="card-content">
-                            <div class="card-header">
-                                <span>${friend.Nombre}</span>
-                                <span>Fecha: ${new Date(friend.Fecha).toLocaleDateString()}</span>
-                                <span>Nivel: ${friend.N_Traicion}</span>
-                            </div>
-                            <p class="card-description">${friend.Descripcion}</p>
-                        </div>
-                        <div class="card-actions">
-                            <button class="edit-btn" data-id="${friend.ID}"><i class="fa-solid fa-gear"></i></button>
-                            <button class="delete-btn" data-id="${friend.ID}"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                    friendsListContainer.appendChild(card);
-                });
+                friendsListContainer.innerHTML = '<p style="text-align: center;">Tu lista de traiciones está vacía.</p>';
+                return;
             }
+
+            friends.forEach(friend => {
+                const card = document.createElement('div');
+                card.className = `friend-card ${friend.usuario_id != usuarioId ? 'dark' : ''}`;
+                
+                const nivel = friend.N_Traicion;
+                if (nivel >= 1 && nivel <= 10) {
+                    card.style.backgroundColor = colorPalette[nivel - 1];
+
+                    if (nivel >= 5) {
+                        card.style.color = 'white';
+                    }
+                }
+
+                // Icono de publicación
+                const publishIcon = friend.EsPublico 
+                    ? `<i class="fa-solid fa-flag publish-icon" title="Publicado"></i>` 
+                    : `<i class="fa-regular fa-flag publish-icon" title="No publicado"></i>`;
+
+                card.innerHTML = `
+                    <div class="card-content">
+                        <div class="card-header">
+                            <span>${friend.Nombre}</span>
+                            <span>${new Date(friend.Fecha).toLocaleDateString()}</span>
+                            <span>Nivel: ${friend.N_Traicion}</span>
+                        </div>
+                        <p class="card-description">${friend.Descripcion}</p>
+                        <p class="card-author">Autor: ${friend.EsAnonimo ? 'Anónimo' : friend.AutorNombre}</p>
+                    </div>
+                    <div class="card-actions">
+                        <!-- Botón de Publicar/Enviar -->
+                        <button class="publish-btn" data-id="${friend.ID}" title="Publicar / Editar publicación">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        </button>
+                        <button class="edit-btn" data-id="${friend.ID}" title="Editar"><i class="fa-solid fa-gear"></i></button>
+                        <button class="delete-btn" data-id="${friend.ID}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                friendsListContainer.appendChild(card);
+            });
         } catch (error) {
             console.error('Error fetching friends:', error);
         }
     }
 
-    // Mostrar el modal en modo agregar o editar
-        function showModal(mode = 'add', friendData = null) {
-        form.reset();
+    // Modales Funciones
+    const showFriendModal = (mode = 'add', data = null) => {
+        friendForm.reset();
+        document.getElementById('friend-id').value = '';
         if (mode === 'add') {
-            modalTitle.textContent = 'Agregar Nuevo Amigo Falso';
+            document.getElementById('modal-title').textContent = 'Registrar traicion';
             modalActionBtn.textContent = 'Agregar';
-            document.getElementById('friend-id').value = '';
-        } else if (mode === 'edit' && friendData) {
-            modalTitle.textContent = 'Editar Amigo Falso';
+        } else {
+            document.getElementById('modal-title').textContent = 'Editar traicion';
             modalActionBtn.textContent = 'Guardar Cambios';
-            document.getElementById('friend-id').value = friendData.ID;
-            document.getElementById('nombre').value = friendData.Nombre;
-            // Formatear la fecha para el input type="date" (YYYY-MM-DD)
-            document.getElementById('fecha').value = new Date(friendData.Fecha).toISOString().split('T')[0];
-            document.getElementById('nivel').value = friendData.N_Traicion;
-            document.getElementById('descripcion').value = friendData.Descripcion;
+            document.getElementById('friend-id').value = data.ID;
+            document.getElementById('nombre').value = data.Nombre;
+            document.getElementById('fecha').value = new Date(data.Fecha).toISOString().split('T')[0];
+            document.getElementById('nivel').value = data.N_Traicion;
+            document.getElementById('descripcion').value = data.Descripcion;
         }
-        modal.style.display = 'flex';
-    }
+        friendModal.style.display = 'flex';
+    };
 
+    const showPublishModal = (friendId, esPublico = false, esAnonimo = false) => {
+        pendingPublishId = friendId;
+        publishForm.reset();
+        document.getElementById('accept-publish').checked = !!esPublico;
+        document.getElementById('publish-anonymous').checked = !!esAnonimo;
+        publishModal.style.display = 'flex';
+    };
     
-    function hideModal() {
-        modal.style.display = 'none';
-    }
+    const showDeleteModal = (friendId) => {
+        pendingDeleteId = friendId;
+        deleteConfirmModal.style.display = 'flex';
+    };
 
-    // Manejar envío del formulario (Crear o Actualizar)
-    async function handleFormSubmit(event) {
+    const hideAllModals = () => {
+        friendModal.style.display = 'none';
+        publishModal.style.display = 'none';
+        deleteConfirmModal.style.display = 'none';
+    };
+
+    // Formularios y acciones
+    async function handleFriendFormSubmit(event) {
         event.preventDefault();
         const friendId = document.getElementById('friend-id').value;
-        
-        const friendData = {
+        const data = {
             nombre: document.getElementById('nombre').value,
             fecha: document.getElementById('fecha').value,
             n_traicion: document.getElementById('nivel').value,
@@ -132,70 +165,97 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(friendData)
+                method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
             });
-
-            if (!response.ok) throw new Error('Falló la solicitud');
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Falló la solicitud');
             
-            hideModal();
-            fetchFriends();
-        } catch (error) {
-            console.error('Error submitting form:', error);
-        }
+            hideAllModals();
+            if (isEditing) {
+                fetchFriends(); 
+            } else {
+                showPublishModal(result.id, false, false); 
+            }
+        } catch (error) { console.error('Error submitting form:', error); }
     }
 
-    // Manejar clics en la lista (para Editar y Eliminar)
-    async function handleListClick(event) {
-        const target = event.target.closest('button');
-        if (!target) return;
+    async function handlePublishFormSubmit(event) {
+        event.preventDefault();
+        const data = {
+            es_publico: document.getElementById('accept-publish').checked ? 1 : 0,
+            es_anonimo: document.getElementById('publish-anonymous').checked ? 1 : 0,
+        };
 
-        const friendId = target.dataset.id;
+        try {
+            await fetch(`${API_URL}/amigosfalsos/publicar/${pendingPublishId}`, {
+                method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+            });
+            hideAllModals();
+            fetchFriends();
+        } catch (error) { console.error('Error publishing:', error); }
+    }
+    
+    async function handleDeleteConfirm() {
+        try {
+            await fetch(`${API_URL}/amigosfalsos/${pendingDeleteId}`, { method: 'DELETE' });
+            hideAllModals();
+            fetchFriends();
+        } catch (error) { console.error('Error deleting:', error); }
+    }
 
-        if (target.classList.contains('delete-btn')) {
-            if (confirm('¿Estás seguro de que quieres eliminar a esta persona de la lista?')) {
-                try {
-                    await fetch(`${API_URL}/amigosfalsos/${friendId}`, { method: 'DELETE' });
-                    fetchFriends(); // Recargar lista
-                } catch (error) {
-                    console.error('Error deleting friend:', error);
-                }
-            }
-        } else if (target.classList.contains('edit-btn')) {
-            try {
+    // Eventos y Listeners
+    function init() {
+        usuarioId = getCookie('usuarioId');
+        if (!usuarioId) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        fetchUserData();
+        fetchFriends();
+
+        // Botones principales
+        addFriendBtn.addEventListener('click', () => showFriendModal('add'));
+        logoutBtn.addEventListener('click', () => {
+            deleteCookie('usuarioId');
+            window.location.href = 'login.html';
+        });
+
+        // Formularios
+        friendForm.addEventListener('submit', handleFriendFormSubmit);
+        publishForm.addEventListener('submit', handlePublishFormSubmit);
+
+        // Botones de cancelación en modales
+        friendModal.querySelector('#modal-cancel-btn').addEventListener('click', hideAllModals);
+        publishModal.querySelector('#publish-cancel-btn').addEventListener('click', hideAllModals);
+        deleteConfirmModal.querySelector('#delete-cancel-btn').addEventListener('click', hideAllModals);
+        
+        // Botón de confirmación de borrado
+        deleteConfirmModal.querySelector('#delete-confirm-btn').addEventListener('click', handleDeleteConfirm);
+
+        // Clics en tarjetas (Editar/Eliminar)
+        friendsListContainer.addEventListener('click', async (event) => {
+            const button = event.target.closest('button');
+            if (!button) return;
+            const id = button.dataset.id;
+            
+            if (button.classList.contains('edit-btn')) {
                 const response = await fetch(`${API_URL}/amigosfalsos/usuario/${usuarioId}`);
                 const friends = await response.json();
-                const friendToEdit = friends.find(f => f.ID == friendId);
-                if (friendToEdit) {
-                    showModal('edit', friendToEdit);
+                const friendToEdit = friends.find(f => f.ID == id);
+                if(friendToEdit) showFriendModal('edit', friendToEdit);
+            } else if (button.classList.contains('delete-btn')) {
+                showDeleteModal(id);
+            } else if (button.classList.contains('publish-btn')) {
+                const response = await fetch(`${API_URL}/amigosfalsos/usuario/${usuarioId}`);
+                const friends = await response.json();
+                const friendToPublish = friends.find(f => f.ID == id);
+                if (friendToPublish) {
+                    showPublishModal(id, friendToPublish.EsPublico, friendToPublish.EsAnonimo);
                 }
-            } catch (error) {
-                console.error('Error fetching friend data for edit:', error);
             }
-        }
+        });
     }
 
-    // Verificar si el usuario ha iniciado sesión
-    usuarioId = getCookie('usuarioId');
-    if (usuarioId === null || usuarioId === undefined) {
-        alert('No has iniciado sesión. Serás redirigido.');
-        window.location.href = 'login.html';
-        return;
-    }
-
-    fetchUsername();
-    fetchFriends();
-
-    // Listeners de eventos
-    addFriendBtn.addEventListener('click', () => showModal('add'));
-    cancelBtn.addEventListener('click', hideModal);
-    form.addEventListener('submit', handleFormSubmit);
-    friendsListContainer.addEventListener('click', handleListClick);
-
-    logoutBtn.addEventListener('click', () => {
-        deleteCookie('usuarioId');
-        alert('Has cerrado sesión correctamente.');
-        window.location.href = 'login.html';
-    });
+    init();
 });

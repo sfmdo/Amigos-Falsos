@@ -3,53 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Amigos Falsos</title>
+    <title>Amigos Falsos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="static/css/CSSVerAmigoFalso.css">
 </head>
 <body>
-    <button id="logout-btn" class="logout-button">Cerrar Sesión</button>
-    <div class="main-container">
-        <h2 class="main-title">Lista de amigos falsos de: <span id="username-display">Cargando...</span></h2>
+    <div class="page-container">
+        <!-- Barra Lateral Izquierda -->
+        <aside class="sidebar">
+            <div class="sidebar-user" id="sidebar-username">Cargando...</div>
+            <nav class="sidebar-nav">
+                <a href="#">Comunidad</a>
+                <a href="#" class="active">Mi lista</a>
+            </nav>
+            <button id="logout-btn" class="sidebar-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </aside>
 
-        <!-- Contenedor deslizable para las tarjetas -->
-        <div class="friends-list-container" id="friends-list">
-            
-        </div>
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Amigos Falsos</h1>
+                <button class="add-traiton-btn" id="add-friend-btn">
+                    <span>Agregar traicion</span>
+                    <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+                </button>
+            </header>
+            <div class="friends-list-container" id="friends-list">
+                <!-- Las tarjetas se insertarán aquí -->
+            </div>
+        </main>
     </div>
 
-    <!-- Botón para agregar nuevo amigo -->
-    <button class="add-btn" id="add-friend-btn">
-        <i class="fa-solid fa-plus"></i>
-    </button>
-
-    <!-- El Modal para Agregar/Editar -->
+    <!-- MODAL PARA AGREGAR/EDITAR TRAICIÓN -->
     <div id="friend-modal" class="modal-backdrop" style="display: none;">
         <div class="modal-content">
-            <h3 id="modal-title">Agregar Nuevo Amigo Falso</h3>
+            <h3 id="modal-title">Registrar traicion</h3>
             <form id="friend-form">
-                <!-- Campo oculto para guardar el ID al editar -->
                 <input type="hidden" id="friend-id">
-
                 <div class="form-group">
-                    <input type="text" id="nombre" placeholder="Nombre Completo" required>
+                    <label for="nombre">Nombre del traidor</label>
+                    <input type="text" id="nombre" required>
                 </div>
                 <div class="form-group">
                     <label for="fecha">Fecha del acto:</label>
                     <input type="date" id="fecha" required>
                 </div>
                 <div class="form-group">
-                    <label for="nivel">Nivel de la traicion:</label>
+                    <label for="nivel">Nivel de traicion:</label>
                     <input type="number" id="nivel" min="1" max="10" value="1" required>
                 </div>
                 <div class="form-group">
-                    <textarea id="descripcion" placeholder="Descripcion" rows="4" required></textarea>
+                    <label for="descripcion">Descripcion:</label>
+                    <textarea id="descripcion" rows="4" required></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" id="modal-action-btn">Agregar</button>
-                    <button type="button" id="modal-cancel-btn">Cancelar</button>
+                    <button type="submit" id="modal-action-btn" class="btn-primary">Agregar</button>
+                    <button type="button" id="modal-cancel-btn" class="btn-secondary">Cancelar</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA PUBLICAR TRAICIÓN -->
+    <div id="publish-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <h3>Estas seguro de publicar esta traicion</h3>
+            <form id="publish-form">
+                <div class="checkbox-group">
+                    <label for="accept-publish">Acepto publicar la traicion</label>
+                    <input type="checkbox" id="accept-publish" required>
+                </div>
+                <div class="checkbox-group">
+                    <label for="publish-anonymous">Publicar de forma anonima</label>
+                    <input type="checkbox" id="publish-anonymous">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Publicar</button>
+                    <button type="button" id="publish-cancel-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMACIÓN PARA ELIMINAR -->
+    <div id="delete-confirm-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <h3>¿Estás seguro?</h3>
+            <p>Esta acción no se puede deshacer. ¿Realmente quieres eliminar esta traición?</p>
+            <div class="form-actions">
+                <button id="delete-confirm-btn" class="btn-danger">Eliminar</button>
+                <button id="delete-cancel-btn" class="btn-secondary">Cancelar</button>
+            </div>
         </div>
     </div>
 
