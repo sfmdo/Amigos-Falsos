@@ -155,6 +155,20 @@ app.delete("/api/amigosfalsos/:id", (req, res) => {
     });
 });
 
+app.get("/api/amigosfalsos/comunidad", (req, res) => {
+    const sql = `
+        SELECT af.*, u.nombre_usuario AS autor 
+        FROM AmigoFalso af
+        JOIN usuarios u ON af.usuario_id = u.id
+        WHERE af.EsPublico = 1
+        ORDER BY af.Fecha DESC
+    `;
+    connection.query(sql, (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(result);
+    });
+});
+
 app.use(express.static("public"));
 
 // Puerto
