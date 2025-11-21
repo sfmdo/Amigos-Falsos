@@ -26,12 +26,7 @@ document.getElementById('registroForm').addEventListener('submit', async functio
     const nombreUsuario = document.getElementById('username').value;
     const correo = document.getElementById('email').value;
     const contrasena = document.getElementById('password').value;
-    const terminos = document.getElementById('terms').checked;
 
-    if (!terminos) {
-        alert('Debes aceptar los términos y condiciones.');
-        return;
-    }
 
     try {
         const response = await fetch('http://localhost:3000/api/registro', {
@@ -49,6 +44,7 @@ document.getElementById('registroForm').addEventListener('submit', async functio
         const result = await response.json();
 
         if (response.ok) {
+            console.log("Elpepe");
             setCookie('usuarioId', result.id, 7);
             alert(result.mensaje);
             window.location.href = 'VerAmigosFalsos.html';

@@ -32,7 +32,6 @@ app.post("/api/registro", (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-    // Ahora recibimos 'nombre_usuario' desde el frontend
     const { nombre_usuario, contrasena } = req.body;
 
     if (!nombre_usuario || !contrasena) {

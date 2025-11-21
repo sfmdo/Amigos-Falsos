@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Verificar si el usuario ha iniciado sesión
     usuarioId = getCookie('usuarioId');
-    if (!usuarioId) {
+    if (usuarioId === null || usuarioId === undefined) {
         alert('No has iniciado sesión. Serás redirigido.');
         window.location.href = 'login.html';
         return;

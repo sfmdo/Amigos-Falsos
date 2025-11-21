@@ -29,8 +29,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const result = await response.json();
 
         if (response.ok) {
+            console.log(result.id);
             setCookie('usuarioId', result.id, 7);
-            
             alert(result.mensaje);
             window.location.href = 'VerAmigosFalsos.html';
         } else {
