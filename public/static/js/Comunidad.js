@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnMiLista = document.getElementById('btn-mi-lista');
 
 
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = '/api';
     const POLLING_INTERVAL = 10000; // 10 segundos
     let usuarioId = null;
     let currentView = '/mi-lista'; // Vista por defecto

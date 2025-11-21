@@ -15,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const contrasena = document.getElementById('password').value;
 
     try {
-        const response = await fetch('http://localhost:3000/api/login', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

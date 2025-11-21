@@ -29,7 +29,7 @@ document.getElementById('registroForm').addEventListener('submit', async functio
 
 
     try {
-        const response = await fetch('http://localhost:3000/api/registro', {
+        const response = await fetch('/api/registro', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

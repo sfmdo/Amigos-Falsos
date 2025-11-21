@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalActionBtn = document.getElementById('modal-action-btn');
     
     // --- DATOS GLOBALES ---
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = '/api';
     let usuarioId = null;
     let username = 'Usuario';
     let pendingPublishId = null; // ID de la traición pendiente de publicar
