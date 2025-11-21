@@ -1,4 +1,3 @@
-// static/js/VerAmigosFalsos.js
 document.addEventListener('DOMContentLoaded', () => {
     // --- ELEMENTOS DEL DOM ---
     const sidebarUsername = document.getElementById('sidebar-username');
@@ -11,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'http://localhost:3000/api';
     const POLLING_INTERVAL = 10000; // 10 segundos
     let usuarioId = null;
-    let currentView = 'VerAmigosFalsos.html'; // Vista por defecto
+    let currentView = '/mi-lista'; // Vista por defecto
 
     const colorPalette = [
         '#B4B4B4', '#A7A7A7', '#9A9A9A', '#8D8D8D', '#808080',
@@ -105,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnMiLista.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = 'VerAmigosFalsos.html';
+            window.location.href = '/mi-lista';
         });
 
         btnComunidad.addEventListener('click', (e) => {
