@@ -1,6 +1,7 @@
-// db.js (Solución B: La Opción 'require')
+// db.js (Solución simple para entornos de prueba)
 const { Pool } = require('pg');
 
+// Usamos las variables que Vercel inyecta
 const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
 if (!connectionString) {
@@ -9,9 +10,10 @@ if (!connectionString) {
 
 const pool = new Pool({
     connectionString: connectionString,
+    // --- La configuración necesaria para entornos sin certificados CA ---
     ssl: {
-      // Usar la opción 'require' para forzar la conexión SSL
-        sslmode: 'require' 
+        // Esta es la opción estándar para decirle a pg que no se preocupe por el certificado CA.
+        rejectUnauthorized: false 
     }
 });
 
