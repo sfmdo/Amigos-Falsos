@@ -46,7 +46,6 @@ document.getElementById('registroForm').addEventListener('submit', async functio
         if (response.ok) {
             console.log("Elpepe");
             setCookie('usuarioId', result.id, 7);
-            alert(result.mensaje);
             window.location.href = '/mi-lista';
         } else {
             throw new Error(result.error || 'Ocurrió un error al registrarse.');
@@ -54,6 +53,6 @@ document.getElementById('registroForm').addEventListener('submit', async functio
 
     } catch (error) {
         console.error('Error en el registro:', error);
-        alert(error.message);
+        alert("Error al  registrar intente de nuevo");
     }
 });

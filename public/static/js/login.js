@@ -31,7 +31,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (response.ok) {
             console.log(result.id);
             setCookie('usuarioId', result.id, 7);
-            alert(result.mensaje);
             window.location.href = '/mi-lista';
         } else {
             throw new Error(result.error || 'Ocurrió un error al iniciar sesión.');
@@ -39,6 +38,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
     } catch (error) {
         console.error('Error en el inicio de sesión:', error);
-        alert(error.message);
+        alert("No se ha podido iniciar sesion");
     }
 });
