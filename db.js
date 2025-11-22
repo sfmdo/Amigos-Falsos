@@ -1,19 +1,10 @@
-// db.js
-const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 
-const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY; 
 
-if (!connectionString) {
-    throw new Error("ERROR: La variable de entorno de conexión a la base de datos no está definida.");
-}
-
-const pool = new Pool({
-    connectionString: connectionString,
-    // Dejamos el objeto 'ssl: true' para indicar que la conexión es SSL,
-    // pero la anulación global en server.js maneja la verificación.
-    ssl: true 
-});
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = {
-    query: (text, params) => pool.query(text, params),
+    supabase,
 };

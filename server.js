@@ -1,9 +1,7 @@
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; 
-
 const express = require('express');
 const cors = require('cors');
-const connection = require('./db.js');
+const { supabase } = require('./db.js');
 const cookieParser = require('cookie-parser');
 const app = express();
 const path = require('path');
@@ -50,27 +48,23 @@ app.get('/comunidad', checkAuth, (req, res) => {
     res.render('Comunidad', { titulo: 'Comunidad' });
 });
 
-app.post("/api/registro", (req, res) => {
+app.post("/api/registro", async (req, res) => {
     const { nombre_usuario, correo_electronico, contrasena } = req.body;
 
-    if (!nombre_usuario || !correo_electronico || !contrasena) {
-        return res.status(400).json({ error: "Todos los campos son obligatorios" });
-    }
+    const { data, error } = await supabase
+        .from('usuarios') 
+        .insert([{ nombre_usuario, correo_electronico, contrasena }])
+        .select('id') 
+        .single(); 
 
-    const sql = "INSERT INTO usuarios (nombre_usuario, correo_electronico, contrasena) VALUES ($1, $2, $3)";
-    
-    connection.query(sql, [nombre_usuario, correo_electronico, contrasena], (err, result) => {
-        if (err) {
-            if (err.code === 'ER_DUP_ENTRY') {
-                return res.status(409).json({ error: "El nombre de usuario o correo electrónico ya existe." });
-            }
-            return res.status(500).json({ error: err.message });
+    if (error) {
+        if (error.code === '23505') { // Código de error de PostgreSQL para duplicado
+            return res.status(409).json({ error: "El nombre de usuario o correo electrónico ya existe." });
         }
-        res.status(201).json({ 
-            mensaje: "Usuario registrado correctamente", 
-            id: result.insertId 
-        });
-    });
+        return res.status(500).json({ error: error.message });
+    }
+    
+    res.status(201).json({ mensaje: "Usuario registrado correctamente", id: data.id });
 });
 
 app.post("/api/login", (req, res) => {
