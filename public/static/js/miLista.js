@@ -95,11 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="card-actions">
                         <!-- Botón de Publicar/Enviar -->
-                        <button class="publish-btn" data-id="${friend.ID}" title="Publicar / Editar publicación">
+                        <button class="publish-btn" data-id="${friend.id}" title="Publicar / Editar publicación">
                             <i class="fa-solid fa-arrow-up-from-bracket"></i>
                         </button>
-                        <button class="edit-btn" data-id="${friend.ID}" title="Editar"><i class="fa-solid fa-gear"></i></button>
-                        <button class="delete-btn" data-id="${friend.ID}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        <button class="edit-btn" data-id="${friend.id}" title="Editar"><i class="fa-solid fa-gear"></i></button>
+                        <button class="delete-btn" data-id="${friend.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
                 friendsListContainer.appendChild(card);

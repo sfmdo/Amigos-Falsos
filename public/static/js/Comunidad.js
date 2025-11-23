@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'friend-card';
 
-            const nivel = friend.N_Traicion;
+            const nivel = friend.n_traicion;
             if (nivel >= 1 && nivel <= 10) {
                 card.style.backgroundColor = colorPalette[nivel - 1];
                 if (nivel >= 5) {
