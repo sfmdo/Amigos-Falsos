@@ -61,12 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="card-content">
                     <div class="card-header">
-                        <span>${friend.Nombre}</span>
-                        <span>${new Date(friend.Fecha).toLocaleDateString()}</span>
-                        <span>Nivel: ${friend.N_Traicion}</span>
+                        <span>${friend.nombre}</span>
+                        <span>${new Date(friend.fecha).toLocaleDateString()}</span>
+                        <span>Nivel: ${friend.n_traicion}</span>
                     </div>
-                    <p class="card-description">${friend.Descripcion}</p>
-                    <p class="card-author">Autor: ${friend.EsAnonimo ? 'Anónimo' : friend.AutorNombre}</p>
+                    <p class="card-description">${friend.descripcion}</p>
+                    <p class="card-author">Autor: ${friend.esanonimo ? 'Anónimo' : friend.autornombre}</p>
                 </div>
             `;
             friendsListContainer.appendChild(card);
