@@ -45,7 +45,7 @@ app.get('/mi-lista', checkAuth, (req, res) => {
 });
 
 app.get('/comunidad', checkAuth, (req, res) => {
-    res.render('Comunidad', { titulo: 'Comunidad' });
+    res.render('comunidad', { titulo: 'Comunidad' });
 });
 
 app.post("/api/registro", async (req, res) => {
