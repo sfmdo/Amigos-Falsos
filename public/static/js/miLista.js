@@ -242,14 +242,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (button.classList.contains('edit-btn')) {
                 const response = await fetch(`${API_URL}/amigosfalsos/usuario/${usuarioId}`);
                 const friends = await response.json();
-                const friendToEdit = friends.find(f => f.ID == id);
+                const friendToEdit = friends.find(f => f.id == id);
                 if(friendToEdit) showFriendModal('edit', friendToEdit);
             } else if (button.classList.contains('delete-btn')) {
                 showDeleteModal(id);
             } else if (button.classList.contains('publish-btn')) {
                 const response = await fetch(`${API_URL}/amigosfalsos/usuario/${usuarioId}`);
                 const friends = await response.json();
-                const friendToPublish = friends.find(f => f.ID == id);
+                const friendToPublish = friends.find(f => f.id == id);
                 if (friendToPublish) {
                     showPublishModal(id, friendToPublish.espublico, friendToPublish.esanonimo);
                 }
