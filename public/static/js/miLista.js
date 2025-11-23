@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             document.getElementById('modal-title').textContent = 'Editar traicion';
             modalActionBtn.textContent = 'Guardar Cambios';
-            document.getElementById('friend-id').value = data.ID;
+            document.getElementById('friend-id').value = data.id;
             document.getElementById('nombre').value = data.nombre;
             document.getElementById('fecha').value = new Date(data.fecha).toISOString().split('T')[0];
             document.getElementById('nivel').value = data.n_traicion;
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (button.classList.contains('publish-btn')) {
                 const response = await fetch(`${API_URL}/amigosfalsos/usuario/${usuarioId}`);
                 const friends = await response.json();
-                const friendToPublish = friends.find(f => f.id == id);
+                const friendToPublish = friends.find(f => f.id   == id);
                 if (friendToPublish) {
                     showPublishModal(id, friendToPublish.espublico, friendToPublish.esanonimo);
                 }
