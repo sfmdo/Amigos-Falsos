@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = `friend-card ${friend.usuario_id != usuarioId ? 'dark' : ''}`;
                 
-                const nivel = friend.N_Traicion;
+                const nivel = friend.n_traicion;
                 if (nivel >= 1 && nivel <= 10) {
                     card.style.backgroundColor = colorPalette[nivel - 1];
 
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Icono de publicación
-                const publishIcon = friend.EsPublico 
+                const publishIcon = friend.espublico 
                     ? `<i class="fa-solid fa-flag publish-icon" title="Publicado"></i>` 
                     : `<i class="fa-regular fa-flag publish-icon" title="No publicado"></i>`;
 
@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('modal-title').textContent = 'Editar traicion';
             modalActionBtn.textContent = 'Guardar Cambios';
             document.getElementById('friend-id').value = data.ID;
-            document.getElementById('nombre').value = data.Nombre;
-            document.getElementById('fecha').value = new Date(data.Fecha).toISOString().split('T')[0];
-            document.getElementById('nivel').value = data.N_Traicion;
-            document.getElementById('descripcion').value = data.Descripcion;
+            document.getElementById('nombre').value = data.nombre;
+            document.getElementById('fecha').value = new Date(data.fecha).toISOString().split('T')[0];
+            document.getElementById('nivel').value = data.n_traicion;
+            document.getElementById('descripcion').value = data.descripcion;
         }
         friendModal.style.display = 'flex';
     };
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const friends = await response.json();
                 const friendToPublish = friends.find(f => f.ID == id);
                 if (friendToPublish) {
-                    showPublishModal(id, friendToPublish.EsPublico, friendToPublish.EsAnonimo);
+                    showPublishModal(id, friendToPublish.espublico, friendToPublish.esanonimo);
                 }
             }
         });
