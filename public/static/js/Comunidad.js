@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         logoutBtn.addEventListener('click', () => {
             deleteCookie('usuarioId');
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         });
     }
 
